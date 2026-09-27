@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledgerly — Building Long-Term Financial Knowledge</title>
+<link rel="icon" href="data:,">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+  :root{
+    --bg: #070B14;
+    --bg-2: #0C1424;
+    --panel: rgba(18,28,48,0.6);
+    --panel-solid: #101A2E;
+    --ink: #F2F5FA;
+    --ink-soft: #90A0BE;
+    --blue-600: #2563EB;
+    --blue-500: #3B82F6;
+    --cyan-400: #22D3EE;
+    --line: rgba(120,150,200,0.18);
+    --glow: rgba(59,130,246,0.28);
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  html,body{ margin:0; padding:0; background:var(--bg); color:var(--ink); font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Space Grotesk',sans-serif; margin:0; }
+  p{ margin:0; }
+  a{ color:inherit; text-decoration:none; }
+  .wrap{ max-width:1140px; margin:0 auto; padding:0 32px; }
+  ::selection{ background:var(--blue-500); color:#fff; }
+
+  /* ---------- nav ---------- */
+  .nav{ position:sticky; top:0; z-index:60; background:rgba(7,11,20,0.75); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+  .nav .wrap{ display:flex; align-items:center; justify-content:space-between; height:76px; }
+  .nav-brand{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:16px; letter-spacing:.01em; }
+  .nav-mark{ width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg,var(--blue-600),var(--cyan-400)); display:flex; align-items:center; justify-content:center; color:#071019; font-size:14px; font-weight:700; }
+  .nav-links{ display:flex; gap:34px; }
+  .nav-links a{ position:relative; font-size:13.5px; font-weight:500; color:var(--ink-soft); padding:6px 0; }
+  .nav-links a::after{ content:""; position:absolute; left:0; bottom:0; width:0; height:2px; background:var(--blue-500); box-shadow:0 0 8px var(--glow); transition:width .3s cubic-bezier(.4,0,.2,1); }
+  .nav-links a:hover{ color:var(--ink); }
+  .nav-links a:hover::after{ width:100%; }
+  .pill-btn{ display:inline-flex; align-items:center; gap:8px; border:none; border-radius:999px; font-weight:600; font-size:13.5px; padding:12px 22px; cursor:pointer; transition:transform .2s ease, box-shadow .25s ease, background .25s ease; }
+  .pill-btn.solid{ background:linear-gradient(120deg,var(--blue-600),var(--cyan-400)); color:#071019; }
+  .pill-btn.solid:hover{ transform:translateY(-2px); box-shadow:0 16px 34px var(--glow); }
+  .pill-btn .arr{ transition:transform .25s ease; }
+  .pill-btn:hover .arr{ transform:translateX(3px); }
+
+  /* ---------- hero ---------- */
+  .hero{ position:relative; padding:110px 0 100px; overflow:hidden; }
+  .hero-bg{ position:absolute; inset:0; z-index:0; background:radial-gradient(60% 60% at 75% 20%, rgba(59,130,246,.22), transparent 60%), radial-gradient(50% 50% at 15% 80%, rgba(34,211,238,.14), transparent 60%); }
+  .hero-lines{ position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.5; }
+  .hero-lines svg{ width:100%; height:100%; }
+  .hero-lines path{ fill:none; stroke:var(--blue-500); stroke-width:1.3; stroke-dasharray:8 14; animation:line-flow 5s linear infinite; filter:drop-shadow(0 0 4px var(--glow)); }
+  .hero-lines path.p2{ stroke:var(--cyan-400); animation-duration:7s; animation-direction:reverse; }
+  @keyframes line-flow{ to{ stroke-dashoffset:-460; } }
+  .hero-grid{ position:relative; z-index:1; display:grid; grid-template-columns:1.15fr .85fr; gap:56px; align-items:center; }
+  .eyebrow{ display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:var(--cyan-400); letter-spacing:.06em; margin-bottom:22px; }
+  .eyebrow .pulse{ width:6px; height:6px; border-radius:50%; background:var(--cyan-400); box-shadow:0 0 8px var(--cyan-400); animation:pulse-dot 1.8s ease-in-out infinite; }
+  @keyframes pulse-dot{ 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.35; transform:scale(1.5); } }
+  .hero h1{ font-size:clamp(2.2rem,4.8vw,3.4rem); font-weight:700; line-height:1.08; letter-spacing:-.01em; margin-bottom:22px; }
+  .hero h1 .word{ display:inline-block; opacity:0; transform:translateY(22px); animation:word-in .65s cubic-bezier(.2,.8,.2,1) forwards; }
+  @keyframes word-in{ to{ opacity:1; transform:translateY(0); } }
+  .hero h1 .grad{ background:linear-gradient(100deg,var(--blue-500),var(--cyan-400),var(--blue-500)); background-size:200% auto; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:grad-shift 5s ease-in-out infinite; }
+  @keyframes grad-shift{ 0%,100%{ background-position:0% center; } 50%{ background-position:100% center; } }
+  .hero p.lede{ font-size:15.5px; color:var(--ink-soft); max-width:48ch; line-height:1.7; margin-bottom:34px; }
+  .hero-ctas{ display:flex; gap:14px; }
+  .pill-btn.ghost-line{ background:transparent; border:1px solid var(--line); color:var(--ink); }
+  .pill-btn.ghost-line:hover{ border-color:var(--blue-500); box-shadow:0 0 0 3px var(--glow); }
+
+  .stat-stack{ display:flex; flex-direction:column; gap:16px; }
+  .stat-card{ background:var(--panel); backdrop-filter:blur(10px); border:1px solid var(--line); border-radius:16px; padding:18px 20px; transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease; }
+  .stat-card:hover{ transform:translateY(-4px); border-color:var(--blue-500); box-shadow:0 18px 36px var(--glow); }
+  .stat-num{ font-family:'Space Grotesk',sans-serif; font-size:1.8rem; font-weight:700; color:#fff; }
+  .stat-label{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
+
+  /* ---------- section shell ---------- */
+  section{ padding:84px 0; border-top:1px solid var(--line); }
+  .section-label{ display:flex; align-items:center; gap:12px; margin-bottom:40px; }
+  .section-label .num{ font-size:12.5px; font-weight:600; color:var(--cyan-400); }
+  .section-label .rule{ flex:1; height:1px; background:var(--line); }
+  .section-label h2{ font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); }
+  .section-head-center{ text-align:center; max-width:620px; margin:0 auto 48px; }
+  .section-head-center h2{ font-size:clamp(1.5rem,3vw,2.1rem); font-weight:600; }
+  .section-head-center p{ font-size:14.5px; color:var(--ink-soft); margin-top:12px; }
+
+  /* ---------- roadmap steps ---------- */
+  .roadmap-row{ display:grid; grid-template-columns:repeat(5,1fr); gap:16px; position:relative; }
+  .roadmap-row::before{ content:""; position:absolute; top:27px; left:9%; right:9%; height:1px; background:repeating-linear-gradient(to right, var(--blue-500) 0 8px, transparent 8px 16px); z-index:0; opacity:.6; }
+  .roadmap-step{ position:relative; z-index:1; text-align:center; }
+  .roadmap-icon{ width:54px; height:54px; border-radius:50%; background:var(--panel-solid); border:1.5px solid var(--line); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:19px; transition:border-color .25s ease, transform .25s ease, box-shadow .25s ease; }
+  .roadmap-step:hover .roadmap-icon{ border-color:var(--blue-500); transform:translateY(-4px); box-shadow:0 16px 30px var(--glow); }
+  .roadmap-step h3{ font-size:13.5px; font-weight:600; }
+
+  /* ---------- feature cards ---------- */
+  .feature-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+  .feature-card{ background:var(--panel); backdrop-filter:blur(10px); border:1px solid var(--line); border-radius:18px; padding:26px; transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, border-color .3s ease; position:relative; overflow:hidden; }
+  .feature-card::before{ content:""; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--blue-500),var(--cyan-400)); transform:scaleX(0); transform-origin:left; transition:transform .35s ease; }
+  .feature-card:hover{ transform:translateY(-8px); border-color:var(--blue-500); box-shadow:0 22px 44px var(--glow); }
+  .feature-card:hover::before{ transform:scaleX(1); }
+  .feature-icon{ width:42px; height:42px; border-radius:12px; background:rgba(59,130,246,.15); display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:16px; }
+  .feature-card h3{ font-size:15.5px; font-weight:600; margin-bottom:8px; transition:color .25s ease; }
+  .feature-card:hover h3{ color:var(--cyan-400); }
+  .feature-card p{ font-size:13.5px; color:var(--ink-soft); line-height:1.6; }
+
+  /* ---------- blockchain network ---------- */
+  .network-block{ display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
+  .network-copy h2{ font-size:clamp(1.5rem,3vw,2rem); font-weight:600; margin-bottom:16px; }
+  .network-copy p{ font-size:14.5px; color:var(--ink-soft); line-height:1.7; margin-bottom:24px; max-width:46ch; }
+  .network-tags{ display:flex; gap:10px; flex-wrap:wrap; }
+  .network-tags span{ font-size:12px; font-weight:600; color:var(--cyan-400); background:rgba(34,211,238,.1); border:1px solid rgba(34,211,238,.3); padding:7px 14px; border-radius:999px; transition:background .2s ease, transform .2s ease; }
+  .network-tags span:hover{ background:rgba(34,211,238,.22); transform:translateY(-2px); }
+  .network-visual{ position:relative; aspect-ratio:1/.8; }
+  .network-visual svg{ width:100%; height:100%; }
+  .net-line{ stroke:var(--blue-500); stroke-width:1.4; opacity:.55; stroke-dasharray:6 10; animation:line-flow 4s linear infinite; }
+  .net-node{ fill:var(--panel-solid); stroke:var(--cyan-400); stroke-width:1.5; }
+  .net-node.big{ animation:node-pulse 2.6s ease-in-out infinite; }
+  @keyframes node-pulse{ 0%,100%{ r:9; } 50%{ r:11; } }
+
+  /* ---------- quote ---------- */
+  .quote-block{ text-align:center; max-width:680px; margin:0 auto; }
+  .quote-mark{ font-family:'Space Grotesk',sans-serif; font-size:2.6rem; color:var(--blue-500); line-height:1; margin-bottom:8px; }
+  .quote-block p{ font-size:clamp(1.2rem,2.6vw,1.6rem); font-weight:500; line-height:1.5; }
+  .quote-block p .word{ display:inline-block; }
+
+  /* ---------- bottom strip ---------- */
+  .strip-row{ display:grid; grid-template-columns:repeat(5,1fr); gap:16px; }
+  .strip-item{ display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:var(--ink-soft); padding:14px; border:1px solid var(--line); border-radius:14px; transition:border-color .2s ease, color .2s ease, transform .2s ease; }
+  .strip-item:hover{ border-color:var(--blue-500); color:var(--ink); transform:translateY(-3px); }
+  .strip-item .ic{ font-size:16px; }
+
+  /* ---------- CTA / footer ---------- */
+  .cta-panel{ background:linear-gradient(120deg,rgba(59,130,246,.14),rgba(34,211,238,.1)); border:1px solid var(--line); border-radius:24px; padding:48px; text-align:center; }
+  .cta-panel h2{ font-size:clamp(1.5rem,3vw,2.1rem); font-weight:600; margin-bottom:14px; }
+  .cta-panel p{ font-size:14.5px; color:var(--ink-soft); margin-bottom:26px; }
+  footer{ padding:40px 0; text-align:center; color:var(--ink-soft); font-size:12.5px; border-top:1px solid var(--line); display:flex; justify-content:space-between; }
+  footer a:hover{ color:var(--cyan-400); }
+
+  .reveal{ opacity:0; transform:translateY(22px); transition:opacity .65s cubic-bezier(.2,.8,.2,1), transform .65s cubic-bezier(.2,.8,.2,1); }
+  .reveal.in-view{ opacity:1; transform:translateY(0); }
+
+  @media (max-width:900px){
+    .hero-grid, .network-block{ grid-template-columns:1fr; }
+    .feature-grid{ grid-template-columns:1fr 1fr; }
+    .roadmap-row, .strip-row{ grid-template-columns:repeat(2,1fr); }
+    .roadmap-row::before{ display:none; }
+    .nav-links{ display:none; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+    .reveal, .hero h1 .word{ opacity:1 !important; transform:none !important; }
+  }
+  .tryit{ background:#0C1424; color:#F2F5FA; text-align:center; font-size:12.5px; font-weight:600; padding:10px 16px; position:relative; z-index:80; border-bottom:1px solid var(--line); }
+  .tryit button{ background:none; border:1px solid rgba(255,255,255,.3); color:#F2F5FA; border-radius:999px; padding:5px 14px; margin-left:10px; font-size:12px; font-weight:600; cursor:pointer; transition:background .2s ease; }
+  .tryit button:hover{ background:rgba(59,130,246,.25); }
+  .tryit .status{ margin-left:10px; opacity:.75; }
+  #fileInput{ display:none; }
+  .pill-btn[hidden]{ display:none; }
+</style>
+</head>
+<body>
+
+<div class="tryit">
+  This theme can carry a real profile too — upload a resume and the headline, numbers and contact button below update to match.
+  <button type="button" onclick="document.getElementById('fileInput').click()">Try it — upload a resume</button>
+  <span class="status" id="tryitStatus"></span>
+  <input type="file" id="fileInput" accept="application/pdf">
+</div>
+
+<nav class="nav">
+  <div class="wrap">
+    <div class="nav-brand"><span class="nav-mark" id="navMark">L</span><span id="navName">Ledgerly</span></div>
+    <div class="nav-links">
+      <a href="#learn">Learn</a>
+      <a href="#invest">Invest</a>
+      <a href="#blockchain">Blockchain</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <button class="pill-btn ghost-line" id="downloadBtn" type="button" hidden onclick="downloadSite()">Download site</button>
+      <button class="pill-btn solid" type="button" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get started <span class="arr">→</span></button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-lines" aria-hidden="true">
+    <svg viewBox="0 0 1000 500" preserveAspectRatio="none">
+      <path class="p1" d="M-20,110 C220,30 360,210 580,130 S900,50 1020,150"/>
+      <path class="p2" d="M-20,330 C240,410 380,250 600,350 S880,450 1020,330"/>
+    </svg>
+  </div>
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow"><span class="pulse"></span><span id="heroEyebrow">DIGITAL FINANCE &amp; EDUCATION</span></div>
+      <h1 id="heroTitle"></h1>
+      <p class="lede" id="heroLede">Knowledge is your greatest investment. Learn, invest and manage risk with confidence — one clear lesson at a time.</p>
+      <div class="hero-ctas">
+        <button class="pill-btn solid" type="button" onclick="document.getElementById('learn').scrollIntoView({behavior:'smooth'})">Explore lessons <span class="arr">→</span></button>
+        <a class="pill-btn ghost-line" href="#blockchain">See blockchain basics</a>
+        <a class="pill-btn ghost-line" id="contactBtn" href="#" hidden>Contact</a>
+      </div>
+    </div>
+    <div class="stat-stack">
+      <div class="stat-card reveal"><div class="stat-num" id="stat1Num" data-count="50">0</div><div class="stat-label" id="stat1Label">K+ learners guided</div></div>
+      <div class="stat-card reveal"><div class="stat-num" id="stat2Num" data-count="98">0</div><div class="stat-label" id="stat2Label">% found it useful</div></div>
+      <div class="stat-card reveal"><div class="stat-num" id="stat3Num" data-count="10">0</div><div class="stat-label" id="stat3Label">Years of market insight</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="learn">
+  <div class="wrap">
+    <div class="section-label reveal"><span class="num">01</span><div class="rule"></div><h2>Your Financial Growth Roadmap</h2></div>
+    <div class="roadmap-row">
+      <div class="roadmap-step reveal"><div class="roadmap-icon">📘</div><h3>Learn</h3></div>
+      <div class="roadmap-step reveal"><div class="roadmap-icon">🗒️</div><h3>Plan</h3></div>
+      <div class="roadmap-step reveal"><div class="roadmap-icon">📈</div><h3>Invest</h3></div>
+      <div class="roadmap-step reveal"><div class="roadmap-icon">🌱</div><h3>Grow</h3></div>
+      <div class="roadmap-step reveal"><div class="roadmap-icon">🏆</div><h3>Achieve</h3></div>
+    </div>
+  </div>
+</section>
+
+<section id="invest">
+  <div class="wrap">
+    <div class="section-label reveal"><span class="num">02</span><div class="rule"></div><h2>Where to start</h2></div>
+    <div class="feature-grid">
+      <div class="feature-card reveal"><div class="feature-icon">📖</div><h3>Financial Education</h3><p>Learn, understand and grow every day with lessons built for real decisions.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">📊</div><h3>Smart Investing</h3><p>Make informed decisions for a better future, grounded in real data.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">🛡️</div><h3>Risk Management</h3><p>Protect your assets and secure your financial future as you grow.</p></div>
+      <div class="feature-card reveal"><div class="feature-icon">💡</div><h3>Financial Literacy</h3><p>The more you learn, the more you earn — one concept at a time.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="blockchain">
+  <div class="wrap">
+    <div class="section-label reveal"><span class="num">03</span><div class="rule"></div><h2>Blockchain Education</h2></div>
+    <div class="network-block">
+      <div class="network-copy reveal">
+        <h2>Understand the network behind the next generation of finance.</h2>
+        <p>Blockchain isn't just a buzzword — it's a new way of recording trust. Here's the shape of it, without the jargon.</p>
+        <div class="network-tags">
+          <span>Decentralized</span>
+          <span>Secure</span>
+          <span>Transparent</span>
+        </div>
+      </div>
+      <div class="network-visual reveal" aria-hidden="true">
+        <svg viewBox="0 0 400 320">
+          <line class="net-line" x1="200" y1="60" x2="80" y2="150"/>
+          <line class="net-line" x1="200" y1="60" x2="320" y2="150"/>
+          <line class="net-line" x1="80" y1="150" x2="140" y2="260"/>
+          <line class="net-line" x1="320" y1="150" x2="260" y2="260"/>
+          <line class="net-line" x1="140" y1="260" x2="260" y2="260"/>
+          <line class="net-line" x1="80" y1="150" x2="320" y2="150"/>
+          <circle class="net-node big" cx="200" cy="60" r="10"/>
+          <circle class="net-node" cx="80" cy="150" r="7"/>
+          <circle class="net-node" cx="320" cy="150" r="7"/>
+          <circle class="net-node big" cx="140" cy="260" r="9"/>
+          <circle class="net-node big" cx="260" cy="260" r="9"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="quote">
+  <div class="wrap">
+    <div class="quote-block reveal">
+      <div class="quote-mark">"</div>
+      <p id="quoteText"></p>
+    </div>
+  </div>
+</section>
+
+<section id="strip">
+  <div class="wrap">
+    <div class="strip-row">
+      <div class="strip-item reveal"><span class="ic">📘</span>Continuous Learning</div>
+      <div class="strip-item reveal"><span class="ic">💵</span>Financial Freedom</div>
+      <div class="strip-item reveal"><span class="ic">📈</span>Wealth Creation</div>
+      <div class="strip-item reveal"><span class="ic">🌐</span>Digital Finance</div>
+      <div class="strip-item reveal"><span class="ic">🚀</span>Future Ready</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="cta-panel reveal">
+      <h2>Invest in Knowledge. Build Wealth. Create Freedom.</h2>
+      <p>Daily insights and educational content, straight to your inbox.</p>
+      <button class="pill-btn solid" id="ctaBtn" type="button">Follow for daily insights <span class="arr">→</span></button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; width:100%;">
+    <span id="footerName">© 2026 Ledgerly. All rights reserved.</span>
+    <a href="#" id="footerLink">www.ledgerly.example</a>
+  </div>
+</footer>
+
+<script>
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+function initials(name){
+  return (name||'').split(' ').filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('') || 'L';
+}
+function slugify(name){
+  return (name||'ledgerly').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'ledgerly';
+}
+
+function splitWords(el, text, delayStep){
+  el.innerHTML = text.split(' ').map((w,i)=>{
+    const cls = (i>=2 && i<=3) ? 'word grad' : 'word';
+    return `<span class="${cls}" style="animation-delay:${(i*delayStep)}ms;">${w}</span>`;
+  }).join(' ');
+}
+function splitPlainWords(el, text){
+  el.innerHTML = text.split(' ').map(w=>`<span class="word">${w}</span>`).join(' ');
+}
+splitWords(document.getElementById('heroTitle'), 'Building long-term financial knowledge', 65);
+splitPlainWords(document.getElementById('quoteText'), 'The best investment you can make is in yourself.');
+
+/* ============================================================
+   YEARS-OF-EXPERIENCE CALCULATOR
+   ============================================================ */
+const MONTH_MAP = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+function parseDateToken(str){
+  if(!str) return null;
+  const s = str.trim().toLowerCase();
+  if(s === 'present' || s === 'current') return new Date();
+  let m = s.match(/^([a-z]{3,9})\.?\s+(\d{4})$/);
+  if(m && MONTH_MAP[m[1].slice(0,3)] !== undefined) return new Date(parseInt(m[2],10), MONTH_MAP[m[1].slice(0,3)], 1);
+  m = s.match(/^(\d{4})$/);
+  if(m) return new Date(parseInt(m[1],10), 0, 1);
+  return null;
+}
+function computeYearsOfExperience(experience){
+  let totalMonths = 0;
+  (experience||[]).forEach(e=>{
+    const raw = (e.dates||'').trim();
+    const m = raw.match(/^(.*?)\s*(?:–|-|—|to)\s*(.*)$/i);
+    if(!m) return;
+    const start = parseDateToken(m[1]);
+    const end = parseDateToken(m[2]);
+    if(start && end){
+      const months = (end.getFullYear()-start.getFullYear())*12 + (end.getMonth()-start.getMonth());
+      if(months > 0) totalMonths += months;
+    }
+  });
+  return Math.round((totalMonths/12) * 10) / 10;
+}
+
+/* ============================================================
+   SHARED COUNTER ANIMATION — used both by the on-scroll reveal
+   below and by a resume upload replaying with new numbers.
+   ============================================================ */
+function animateCounterTo(el, target, suffix){
+  const duration = 1100;
+  let start = null;
+  function tick(now){
+    if(!start) start = now;
+    const progress = Math.min((now-start)/duration, 1);
+    const eased = 1 - Math.pow(1-progress, 3);
+    el.textContent = Math.round(target*eased) + (suffix||'');
+    if(progress < 1) requestAnimationFrame(tick);
+    else el.textContent = target + (suffix||'');
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ============================================================
+   PDF PARSING
+   ============================================================ */
+if(window.pdfjsLib){
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+async function extractPdfText(file){
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({data: buf}).promise;
+  const lines = [];
+  for(let p=1; p<=pdf.numPages; p++){
+    const page = await pdf.getPage(p);
+    const content = await page.getTextContent();
+    const items = content.items.map(it => ({str: it.str, x: it.transform[4], y: it.transform[5]}));
+    items.sort((a,b) => (b.y - a.y) || (a.x - b.x));
+    let curY = null, curLine = [];
+    items.forEach(it=>{
+      if(curY === null || Math.abs(it.y - curY) > 3){
+        if(curLine.length) lines.push(curLine.map(i=>i.str).join(' '));
+        curLine = [it]; curY = it.y;
+      } else { curLine.push(it); }
+    });
+    if(curLine.length) lines.push(curLine.map(i=>i.str).join(' '));
+  }
+  return lines.map(l => l.replace(/\s+/g,' ').trim()).filter(Boolean);
+}
+
+const SECTION_KEYWORDS = {
+  summary: ['summary','objective','profile','about me','career objective','about'],
+  experience: ['experience','work experience','employment history','professional experience','work history'],
+  education: ['education','academic background','academic qualifications'],
+  skills: ['skills','technical skills','core competencies','key skills'],
+  certifications: ['certifications','certificates','licenses']
+};
+function detectSection(line){
+  const clean = line.toLowerCase().replace(/[^a-z& ]/g,'').trim();
+  if(!clean || clean.length > 40) return null;
+  for(const key in SECTION_KEYWORDS){
+    if(SECTION_KEYWORDS[key].some(w => clean === w || clean.startsWith(w))) return key;
+  }
+  return null;
+}
+
+function parseResume(lines){
+  const data = {name:'', headline:'', location:'', email:'', linkedin:'', summary:'',
+    education:[], experience:[], skills:[], certifications:[]};
+
+  const fullText = lines.join('\n');
+  const emailMatch = fullText.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);
+  if(emailMatch) data.email = emailMatch[0];
+  const linkedinMatch = fullText.match(/linkedin\.com\/[^\s,)]+/i);
+  if(linkedinMatch) data.linkedin = 'https://' + linkedinMatch[0].replace(/^https?:\/\//i,'');
+
+  for(const line of lines.slice(0,6)){
+    if(!line.includes('@') && !/\d{3,}/.test(line) && line.length < 60 && !detectSection(line)){
+      data.name = line; break;
+    }
+  }
+  const locLine = lines.slice(1,8).find(l => /^[A-Za-z .]+,\s*[A-Za-z .]+$/.test(l) && l.length < 40 && l !== data.name);
+  if(locLine) data.location = locLine;
+
+  const nameIdx = lines.indexOf(data.name);
+  if(nameIdx > -1){
+    for(let i=nameIdx+1; i<Math.min(lines.length, nameIdx+4); i++){
+      const l = lines[i];
+      if(!l || detectSection(l)) break;
+      if(l.includes('@') || /\d{3,}/.test(l) || l === data.location) continue;
+      if(l.length < 80){ data.headline = l; break; }
+    }
+  }
+
+  let currentSection = null;
+  const buckets = {summary:[], experience:[], education:[], skills:[], certifications:[]};
+  lines.forEach(line=>{
+    const sec = detectSection(line);
+    if(sec){ currentSection = sec; return; }
+    if(currentSection) buckets[currentSection].push(line);
+  });
+
+  data.summary = buckets.summary.join(' ').slice(0, 400);
+  data.skills = buckets.skills.join(', ').split(/[,•·|;]/).map(s=>s.trim()).filter(s=>s.length>1 && s.length<48).slice(0,10);
+  data.certifications = buckets.certifications.map(l=>l.replace(/^[•·\-]\s*/,'').trim()).filter(Boolean);
+
+  const dateRegex = /((?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*)?(\d{4})\s*(?:–|-|—|to)\s*((?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s*)?(present|\d{4})/i;
+  function groupByDates(blockLines){
+    const entries = []; let current = null;
+    blockLines.forEach(line=>{
+      if(dateRegex.test(line)){
+        if(current) entries.push(current);
+        current = {dates: line.match(dateRegex)[0], lines: []};
+      } else if(current){ current.lines.push(line); }
+      else { current = {dates:'', lines:[line]}; }
+    });
+    if(current) entries.push(current);
+    return entries;
+  }
+  data.experience = groupByDates(buckets.experience).map(e=>{
+    const first = e.lines[0] || '';
+    const parts = first.split(/,| at |—|-/);
+    return { title:(parts[0]||first).trim(), company:(parts[1]||'').trim(), dates:e.dates };
+  }).filter(e=>e.title);
+  data.education = groupByDates(buckets.education).map(e=>{
+    const first = e.lines[0] || '';
+    const rest = e.lines.slice(1);
+    return { degree:first.trim(), school:(rest[0]||'').trim(), dates:e.dates };
+  }).filter(e=>e.degree);
+
+  if(!data.headline && data.experience.length) data.headline = data.experience[0].title;
+  if(!data.summary){
+    const who = data.name || 'This professional';
+    data.summary = data.headline ? `${who} works as ${data.headline}, sharing what real-world experience teaches about money and markets.` : `${who}'s take on building financial knowledge.`;
+  }
+  return data;
+}
+
+/* ============================================================
+   RENDERING — swaps the site's writing, headings, numbers and
+   contact button for a real uploaded profile.
+   ============================================================ */
+let CURRENT_PROFILE = null;
+
+function renderProfile(p){
+  CURRENT_PROFILE = p;
+  const yearsExp = computeYearsOfExperience(p.experience);
+
+  document.getElementById('navMark').textContent = initials(p.name);
+  document.getElementById('navName').textContent = p.name || 'Ledgerly';
+  document.getElementById('footerName').textContent = `© 2026 ${p.name || 'Ledgerly'}. All rights reserved.`;
+
+  document.getElementById('heroEyebrow').textContent = p.location ? p.location.toUpperCase() : 'DIGITAL FINANCE & EDUCATION';
+  splitWords(document.getElementById('heroTitle'), p.headline || 'Building long-term financial knowledge', 65);
+  document.getElementById('heroLede').textContent = p.summary || '';
+
+  const stat1 = document.getElementById('stat1Num'), stat2 = document.getElementById('stat2Num'), stat3 = document.getElementById('stat3Num');
+  document.getElementById('stat1Label').textContent = 'Years of experience';
+  document.getElementById('stat2Label').textContent = 'Roles held';
+  document.getElementById('stat3Label').textContent = p.certifications.length ? 'Certifications' : 'Places studied';
+  animateCounterTo(stat1, yearsExp, '');
+  animateCounterTo(stat2, p.experience.length, '');
+  animateCounterTo(stat3, p.certifications.length || p.education.length, '');
+
+  const contactBtn = document.getElementById('contactBtn');
+  const ctaBtn = document.getElementById('ctaBtn');
+  const footerLink = document.getElementById('footerLink');
+  if(p.email || p.linkedin){
+    const href = p.linkedin || ('mailto:' + p.email);
+    contactBtn.href = href;
+    contactBtn.target = p.linkedin ? '_blank' : '_self';
+    contactBtn.rel = 'noopener';
+    contactBtn.hidden = false;
+    contactBtn.textContent = p.linkedin ? 'Connect on LinkedIn' : 'Contact me';
+    ctaBtn.onclick = ()=> window.open(href, p.linkedin ? '_blank' : '_self');
+    ctaBtn.querySelector('.arr') && (ctaBtn.innerHTML = (p.email ? 'Email me' : 'Connect') + ' <span class="arr">→</span>');
+    if(p.email){ footerLink.href = 'mailto:' + p.email; footerLink.textContent = p.email; }
+  }
+}
+document.getElementById('fileInput').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const status = document.getElementById('tryitStatus');
+  if(file.type !== 'application/pdf'){ status.textContent = "That isn't a PDF."; return; }
+  status.textContent = 'Reading your resume…';
+  try{
+    const lines = await extractPdfText(file);
+    if(lines.length < 3){ status.textContent = "Couldn't read text — try a text-based PDF."; return; }
+    const parsed = parseResume(lines);
+    renderProfile(parsed);
+    document.getElementById('downloadBtn').hidden = false;
+    status.textContent = 'Done — this page is now yours.';
+  } catch(err){
+    status.textContent = 'Could not process that file.';
+  }
+});
+
+function downloadSite(){
+  const doc = document.documentElement.cloneNode(true);
+  doc.querySelector('.tryit')?.remove();
+  doc.querySelector('#downloadBtn')?.remove();
+  const scripts = doc.querySelectorAll('script');
+  const lastScript = scripts[scripts.length-1];
+  const marker = "revealTargets.forEach(t=>io.observe(t));";
+  const text = lastScript.textContent;
+  const idx = text.lastIndexOf(marker);
+  const inject = "\nif(" + JSON.stringify(CURRENT_PROFILE) + "){ renderProfile(" + JSON.stringify(CURRENT_PROFILE) + "); }\n";
+  lastScript.textContent = text.slice(0, idx + marker.length) + inject;
+  const html = '<!DOCTYPE html>\n' + doc.outerHTML;
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = slugify((CURRENT_PROFILE||{}).name) + '.html';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+const revealTargets = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('in-view');
+      entry.target.querySelectorAll('[data-count]').forEach(counter=>{
+        if(counter.dataset.done) return;
+        counter.dataset.done = '1';
+        animateCounterTo(counter, parseFloat(counter.getAttribute('data-count')), '');
+      });
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+revealTargets.forEach(t=>io.observe(t));
+</script>
+</body>
+</html>
