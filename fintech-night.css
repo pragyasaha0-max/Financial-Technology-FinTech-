@@ -1,0 +1,162 @@
+/*
+  Fintech Night: dark dashboard theme
+  Pair with fintech-night.js. Every class is prefixed fn- so it can sit inside another site.
+
+  Turn it on:   <body class="fn" data-fn-bg>
+  Light mode:   <html data-fn-mode="light">
+  Colours:      change the --fn-* values in the first block.
+*/
+
+.fn{
+  --fn-bg:#060b17;
+  --fn-card:rgba(14,23,42,.74);
+  --fn-card-hi:rgba(20,33,60,.9);
+  --fn-line:rgba(110,140,200,.17);
+  --fn-ink:#eef3fb;
+  --fn-soft:#8d9bb5;
+  --fn-accent:#3b82f6;
+  --fn-accent-l:#60a5fa;
+  --fn-accent-d:#2563eb;
+  --fn-cyan:#22d3ee;
+  --fn-ok:#34d399;
+  --fn-warn:#fbbf24;
+  --fn-bad:#fb7185;
+  --fn-shadow:0 18px 40px -18px rgba(0,0,0,.7);
+  --fn-sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --fn-head:'Plus Jakarta Sans','Inter',system-ui,sans-serif;
+  margin:0;background:var(--fn-bg);color:var(--fn-ink);font-family:var(--fn-sans);
+  -webkit-font-smoothing:antialiased;line-height:1.5;
+}
+:root[data-fn-mode="light"] .fn{
+  --fn-bg:#eef2fa;
+  --fn-card:rgba(255,255,255,.82);
+  --fn-card-hi:#ffffff;
+  --fn-line:rgba(60,90,150,.16);
+  --fn-ink:#0f1b33;
+  --fn-soft:#5a6b8a;
+  --fn-accent:#2563eb;
+  --fn-accent-l:#3b82f6;
+  --fn-accent-d:#1d4ed8;
+  --fn-shadow:0 18px 38px -20px rgba(40,70,140,.35);
+}
+.fn *,.fn *::before,.fn *::after{box-sizing:border-box}
+.fn h1,.fn h2,.fn h3,.fn p{margin:0}
+.fn h1,.fn h2,.fn h3{font-family:var(--fn-head)}
+:where(.fn) a{color:inherit;text-decoration:none}
+.fn ::selection{background:var(--fn-accent);color:#fff}
+
+/* ---------- background: soft glows, a faint grid and chart lines that keep moving ---------- */
+.fn-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
+  background:
+    radial-gradient(900px 520px at 78% -8%,rgba(37,99,235,.22),transparent 70%),
+    radial-gradient(700px 480px at 4% 96%,rgba(34,211,238,.09),transparent 70%),
+    var(--fn-bg)}
+.fn-bg::before{content:"";position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(var(--fn-line) 1px,transparent 1px),linear-gradient(90deg,var(--fn-line) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(ellipse at 60% 30%,#000,transparent 75%);mask-image:radial-gradient(ellipse at 60% 30%,#000,transparent 75%)}
+.fn-bg svg{position:absolute;inset:0;width:100%;height:100%}
+.fn-bg path{fill:none;stroke:var(--fn-accent-l);stroke-width:1.2;stroke-dasharray:3 11;opacity:.3;animation:fn-flow 24s linear infinite}
+.fn-bg path:nth-child(2){animation-duration:34s;animation-direction:reverse;opacity:.22;stroke:var(--fn-cyan)}
+.fn-bg path:nth-child(3){animation-duration:46s;opacity:.18}
+@keyframes fn-flow{to{stroke-dashoffset:-280}}
+
+/* ---------- card ---------- */
+.fn-card{position:relative;border:1px solid var(--fn-line);border-radius:16px;background:var(--fn-card);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);padding:22px;
+  transition:transform .3s ease,border-color .3s,background .3s,box-shadow .3s}
+.fn-card:hover{border-color:rgba(96,165,250,.38);background:var(--fn-card-hi);box-shadow:var(--fn-shadow)}
+.fn-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.fn-card-head h2{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.fn-card-head h2 svg{width:20px;height:20px;color:var(--fn-accent-l);flex:none}
+.fn-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--fn-accent-l);background:none;border:0;padding:4px 0;cursor:pointer;font-family:inherit;transition:gap .2s,color .2s}
+.fn-link svg{width:14px;height:14px}
+.fn-link:hover{gap:10px;color:var(--fn-cyan)}
+
+/* ---------- buttons ---------- */
+.fn-btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  font:600 14px var(--fn-sans);padding:12px 22px;border-radius:12px;border:1px solid transparent;cursor:pointer;
+  transition:transform .2s,box-shadow .25s,background .25s,border-color .25s,color .25s}
+.fn-btn svg{width:17px;height:17px;flex:none}
+.fn-btn:hover{transform:translateY(-2px)}
+.fn-btn[hidden]{display:none}
+.fn-btn-solid{background:linear-gradient(180deg,#4f94ff,var(--fn-accent-d));color:#fff;box-shadow:0 10px 24px -10px var(--fn-accent)}
+.fn-btn-solid:hover{box-shadow:0 14px 30px -8px var(--fn-accent)}
+.fn-btn-line{background:transparent;border-color:rgba(160,185,235,.38);color:var(--fn-ink)}
+.fn-btn-line:hover{border-color:var(--fn-accent-l);background:rgba(59,130,246,.12)}
+.fn-btn-sm{padding:9px 16px;font-size:13px}
+.fn-btn-solid::after{content:"";position:absolute;inset:0;pointer-events:none;transform:translateX(-130%);
+  background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.45) 50%,transparent 62%);animation:fn-shimmer 6s ease-in-out infinite}
+.fn-btn-solid:hover::after{animation:none;transform:translateX(130%);transition:transform .8s ease}
+@keyframes fn-shimmer{0%,70%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
+
+/* ---------- chips ---------- */
+.fn-chips{display:flex;flex-wrap:wrap;gap:10px}
+.fn-chip{display:inline-block;padding:9px 16px;border-radius:99px;font-size:13px;border:1px solid var(--fn-line);
+  background:rgba(40,70,130,.18);color:var(--fn-ink);transition:transform .2s,background .25s,border-color .25s,color .25s,opacity .25s}
+.fn-chip:hover{transform:translateY(-3px);background:rgba(59,130,246,.22);border-color:var(--fn-accent-l);color:#fff}
+.fn-chip.is-dim{opacity:.25}
+
+/* ---------- text that highlights on hover ---------- */
+.fn-hl{background:linear-gradient(var(--fn-accent),var(--fn-accent)) 0 100%/0 2px no-repeat;transition:background-size .35s,color .25s}
+.fn-hl:hover{background-size:100% 2px;color:var(--fn-accent-l)}
+
+/* ---------- progress bar (set --fn-pct inline) ---------- */
+.fn-bar{height:6px;border-radius:99px;background:var(--fn-line);overflow:hidden}
+.fn-bar i{display:block;height:100%;width:calc(var(--fn-pct,0) * 1%);border-radius:99px;background:linear-gradient(90deg,var(--fn-accent),var(--fn-cyan));transition:width 1s cubic-bezier(.3,.7,.2,1)}
+.fn-js .fn-bar:not(.is-in) i{width:0}
+
+/* ---------- scroll reveal (hidden only while JS runs, so a no-JS page still shows everything) ---------- */
+.fn-js .fn-reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease,border-color .3s,background .3s,box-shadow .3s}
+.fn-js .fn-reveal.is-in{opacity:1;transform:none}
+.fn-js .fn-reveal.is-in.fn-card:hover{transform:translateY(-4px)}
+.fn-js .fn-stagger>*{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease,border-color .3s,background .3s,box-shadow .3s}
+.fn-js .fn-stagger.is-in>*{opacity:1;transform:none}
+.fn-js .fn-stagger.is-in>*:nth-child(2){transition-delay:.08s}
+.fn-js .fn-stagger.is-in>*:nth-child(3){transition-delay:.16s}
+.fn-js .fn-stagger.is-in>*:nth-child(4){transition-delay:.24s}
+.fn-js .fn-stagger.is-in>*:nth-child(5){transition-delay:.32s}
+.fn-js .fn-stagger.is-in>*:nth-child(n+6){transition-delay:.4s}
+.fn-js .fn-stagger.is-in>*:hover{transform:translateY(-4px);transition-delay:0s}
+
+/* words appear one at a time: <h1 data-fn-words>, the script wraps each word */
+.fn-w{display:inline-block}
+.fn-js [data-fn-words] .fn-w{opacity:0;transform:translateY(.55em);transition:opacity .6s ease,transform .6s ease;transition-delay:calc(var(--i) * 55ms)}
+.fn-js [data-fn-words].is-in .fn-w{opacity:1;transform:none}
+.fn-js [data-fn-words] .fn-wipe{display:inline-block;clip-path:inset(0 100% 0 0);transition:clip-path 1.2s cubic-bezier(.6,.1,.2,1) .45s}
+.fn-js [data-fn-words].is-in .fn-wipe{clip-path:inset(-10% -2% -10% 0)}
+
+/* ---------- light that runs round a border: add fn-glow to a box ----------
+   ::before is the travelling light, ::after the spotlight under the cursor.
+   Don't use those two pseudo-elements on the same element for anything else. */
+@property --fn-a{syntax:'<angle>';inherits:false;initial-value:0deg}
+.fn-glow{position:relative;isolation:isolate}
+.fn-glow::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1.5px;pointer-events:none;
+  background:conic-gradient(from var(--fn-a),transparent 0 50%,rgba(34,211,238,.15) 56%,var(--fn-accent) 78%,var(--fn-cyan) 90%,#fff 96%,transparent 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
+  opacity:.45;animation:fn-orbit 9s linear infinite;animation-delay:var(--fn-delay,0s);transition:opacity .35s}
+@keyframes fn-orbit{to{--fn-a:360deg}}
+.fn-glow::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none;opacity:0;transition:opacity .35s;
+  background:radial-gradient(260px circle at var(--fn-mx,50%) var(--fn-my,50%),rgba(59,130,246,.26),transparent 65%)}
+.fn-glow:hover::before,.fn-glow.is-lit::before{opacity:1;animation-duration:3s}
+.fn-glow:hover::after{opacity:1}
+.fn-glow.is-lit{box-shadow:0 0 30px -8px var(--fn-accent),var(--fn-shadow)}
+
+/* ---------- ring round a counter ---------- */
+.fn-ring{position:relative;display:inline-grid;place-items:center;width:58px;height:58px}
+.fn-ring svg{position:absolute;inset:0;width:100%;height:100%}
+.fn-ring .fn-ring-track{fill:none;stroke:var(--fn-line);stroke-width:4}
+.fn-ring .fn-ring-arc{fill:none;stroke:var(--fn-cyan);stroke-width:4;stroke-linecap:round;stroke-dasharray:50 130;
+  transform-box:fill-box;transform-origin:50% 50%;animation:fn-spin 4.5s linear infinite;filter:drop-shadow(0 0 4px var(--fn-cyan))}
+@keyframes fn-spin{to{transform:rotate(360deg)}}
+
+/* ---------- timeline line that draws itself ---------- */
+.fn-js .fn-draw{transform:scaleY(0);transform-origin:top;transition:transform 1.4s ease}
+.fn-js .fn-draw.is-in{transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  .fn *,.fn *::before,.fn *::after{animation:none!important;transition:none!important}
+  .fn-js .fn-reveal,.fn-js .fn-stagger>*,.fn-js [data-fn-words] .fn-w,.fn-js .fn-draw{opacity:1!important;transform:none!important}
+  .fn-js [data-fn-words] .fn-wipe{clip-path:none!important}
+}
