@@ -1,17 +1,13 @@
 # Fintech Night
 
-A dark dashboard theme for portfolio pages, plus a working CV-to-dashboard page built on it.
+A dark dashboard theme for portfolio pages, plus a ready-made dashboard page built on it.
 
-- `index.html` self-contained page. Upload a CV (PDF) and the dashboard rebuilds itself from it.
+- `index.html` self-contained dashboard page with placeholder content.
 - `fintech-night.css` + `fintech-night.js` the theme on its own, for dropping into another site.
 
 ## Try the page
 
-Open `index.html`. It starts with a made-up sample profile. Choose **Upload CV** (or drop a PDF on the page) and the hero, stats, skills, experience, education, activity and projects are rebuilt from the file. The PDF is read in the browser; nothing is uploaded anywhere.
-
-**Download site** saves the current dashboard as one standalone `.html` file with the profile baked in. If the CV is under 2.5 MB it is embedded too, so **Download CV** works on the exported page.
-
-Parsing needs a text-based PDF with headings such as Experience, Education, Projects and Skills. Scanned images won't work. Anything the parser can't find shows an empty note instead of made-up content.
+Open `index.html`. It shows a made-up sample profile ("Name"). Replace the text, projects and images with your own.
 
 ## Use the theme in another page
 
